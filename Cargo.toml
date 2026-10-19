@@ -9,4 +9,4 @@ name = "wintrace"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = "0.29.0"
+pyo3 = "0.30.1"
