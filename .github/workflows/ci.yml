@@ -27,13 +27,9 @@ jobs:
           - runner: ubuntu-22.04
             target: x86_64
           - runner: ubuntu-22.04
-            target: x86
-          - runner: ubuntu-22.04
             target: aarch64
           - runner: ubuntu-22.04
             target: armv7
-          - runner: ubuntu-22.04
-            target: s390x
           - runner: ubuntu-22.04
             target: ppc64le
     steps:
@@ -61,8 +57,6 @@ jobs:
         platform:
           - runner: ubuntu-22.04
             target: x86_64
-          - runner: ubuntu-22.04
-            target: x86
           - runner: ubuntu-22.04
             target: aarch64
           - runner: ubuntu-22.04
@@ -93,9 +87,6 @@ jobs:
           - runner: windows-latest
             target: x64
             python_arch: x64
-          - runner: windows-latest
-            target: x86
-            python_arch: x86
           - runner: windows-11-arm
             target: aarch64
             python_arch: arm64
@@ -157,3 +148,32 @@ jobs:
         with:
           name: wheels-sdist
           path: dist
+
+  tests:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Install Maturin
+        run: python -m pip install maturin
+      - name: Build and install extension
+        run: maturin develop
+      - name: Run Python API tests
+        run: python -m unittest discover -s tests -v
+      - name: Run Rust unit tests
+        run: cargo test --no-default-features
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Install documentation dependencies
+        run: python -m pip install -r docs/requirements.txt
+      - name: Build documentation
+        run: mkdocs build --strict
