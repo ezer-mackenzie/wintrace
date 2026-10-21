@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from importlib.metadata import version as installed_version
 from pathlib import Path
 from typing import Any, cast
 
@@ -77,7 +78,7 @@ class TestOfflineApi(unittest.TestCase):
 
 class TestPackageSurface(unittest.TestCase):
     def test_version_and_exports(self):
-        self.assertEqual(wintrace.__version__, "0.3.0")
+        self.assertEqual(wintrace.__version__, installed_version("wintrace"))
         for name in wintrace.__all__:
             self.assertTrue(hasattr(wintrace, name), name)
 

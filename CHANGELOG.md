@@ -8,6 +8,13 @@ Notable changes to `wintrace` are documented here.
 
 - Compatible fixes and maintenance updates.
 
+## [0.4.0]
+
+### Changed
+
+- Read `wintrace.__version__` from the compiled extension's Cargo package
+  version, keeping the Python API and distribution metadata synchronized.
+
 ## [0.3.0]
 
 ### Fixed

@@ -22,6 +22,7 @@ fn xml_to_json(xml: &str) -> PyResult<String> {
 
 #[pymodule]
 fn _wintrace(module: &Bound<'_, PyModule>) -> PyResult<()> {
+    module.add("__version__", env!("CARGO_PKG_VERSION"))?;
     module.add_class::<EventRecord>()?;
     module.add_class::<offline::EvtxFile>()?;
     module.add_class::<offline::EvtxRecordIterator>()?;

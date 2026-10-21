@@ -3,6 +3,8 @@ from os import PathLike
 from types import TracebackType
 from typing import Any
 
+__version__: str
+
 class EventRecord:
     xml: str
     event_id: None | int
