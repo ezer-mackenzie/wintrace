@@ -79,6 +79,23 @@ class TestOfflineApi(unittest.TestCase):
 class TestPackageSurface(unittest.TestCase):
     def test_version_and_exports(self):
         self.assertEqual(wintrace.__version__, installed_version("wintrace"))
+        self.assertEqual(
+            wintrace.__all__,
+            [
+                "__version__",
+                "EventRecord",
+                "EvtxFile",
+                "EvtxRecordIterator",
+                "LiveEventIterator",
+                "LiveEventLog",
+                "iter_events",
+                "iter_evtx",
+                "query_events",
+                "read_evtx",
+                "xml_to_dict",
+                "xml_to_json",
+            ],
+        )
         for name in wintrace.__all__:
             self.assertTrue(hasattr(wintrace, name), name)
 

@@ -2,6 +2,12 @@
 
 The public API is exported from `wintrace`.
 
+Before `1.0.0`, minor releases may refine behavior and signatures; the
+changelog records those changes. The top-level exports listed in
+`wintrace.__all__` are the API surface being frozen for `1.0.0`. In the `1.x`
+series, additions and fixes will preserve compatibility; breaking changes
+require a new major version.
+
 ## Live event queries
 
 ```python

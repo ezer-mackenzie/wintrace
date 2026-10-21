@@ -8,6 +8,13 @@ Notable changes to `wintrace` are documented here.
 
 - Compatible fixes and maintenance updates.
 
+## [0.9.0]
+
+### Changed
+
+- Freeze the intended top-level exports as an explicit API contract test and
+  document the pre-1.0 compatibility boundary.
+
 ## [0.8.0]
 
 ### Changed
