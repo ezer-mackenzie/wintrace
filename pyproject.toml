@@ -4,10 +4,36 @@ build-backend = "maturin"
 
 [project]
 name = "wintrace"
-requires-python = ">=3.8"
+description = "Windows Event Log querying and EVTX parsing for Python, powered by Rust and PyO3"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+keywords = ["windows", "event-log", "evtx", "forensics", "pyo3"]
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
 ]
 dynamic = ["version"]
+
+[project.urls]
+Repository = "https://github.com/ezer-mackenzie/wintrace"
+
+[tool.maturin]
+module-name = "wintrace._wintrace"
+python-source = "python"
+include = [
+    { path = "python/wintrace/py.typed", format = "wheel" },
+    { path = "tests/*.py", format = "sdist" },
+]
+
+[tool.pyright]
+include = ["python", "tests"]
+extraPaths = ["python"]
+pythonVersion = "3.10"
