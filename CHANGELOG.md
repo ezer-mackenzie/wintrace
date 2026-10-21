@@ -8,6 +8,15 @@ Notable changes to `wintrace` are documented here.
 
 - Compatible fixes and maintenance updates.
 
+## [0.2.0]
+
+### Fixed
+
+- Live event iterators continue waiting when `EvtNext` reaches its polling
+  timeout and stop only when the query reports that no more items are available.
+- The extension stub no longer relies on the undeclared `typing_extensions`
+  package for context-manager typing.
+
 ## [0.1.0]
 
 ### Added

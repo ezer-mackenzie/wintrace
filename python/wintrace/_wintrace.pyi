@@ -3,8 +3,6 @@ from os import PathLike
 from types import TracebackType
 from typing import Any
 
-from typing_extensions import Self
-
 class EventRecord:
     xml: str
     event_id: None | int
@@ -30,7 +28,7 @@ class EvtxFile:
     def __init__(self, path: str | PathLike[str]) -> None: ...
     def read(self, limit: None | int = ..., format: str = ...) -> list[Any]: ...
     def iter(self, format: str = ...) -> EvtxRecordIterator: ...
-    def __enter__(self) -> Self: ...
+    def __enter__(self) -> "EvtxFile": ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,

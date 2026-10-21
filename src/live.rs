@@ -35,45 +35,50 @@ impl LiveEventIterator {
     fn __next__(&mut self, py: Python<'_>) -> PyResult<Option<Py<PyAny>>> {
         #[cfg(windows)]
         {
-            if self.finished {
-                return Ok(None);
-            }
-            let query_handle = self.query_handle.0;
-            let (succeeded, event_handle, returned) = py.detach(|| {
-                const EVENT_READ_TIMEOUT_MS: u32 = 1000;
-                let mut event_handle = 0isize;
-                let mut returned = 0u32;
-                let succeeded = unsafe {
-                    windows_sys::Win32::System::EventLog::EvtNext(
-                        query_handle,
-                        1,
-                        &mut event_handle,
-                        EVENT_READ_TIMEOUT_MS,
-                        0,
-                        &mut returned,
-                    )
-                };
-                (succeeded, event_handle, returned)
-            });
-            if succeeded == 0 {
-                let error = unsafe { windows_sys::Win32::Foundation::GetLastError() };
-                if error == windows_sys::Win32::Foundation::ERROR_NO_MORE_ITEMS
-                    || error == windows_sys::Win32::Foundation::ERROR_TIMEOUT
-                {
+            loop {
+                if self.finished {
+                    return Ok(None);
+                }
+                let query_handle = self.query_handle.0;
+                let (succeeded, event_handle, returned) = py.detach(|| {
+                    const EVENT_READ_TIMEOUT_MS: u32 = 1000;
+                    let mut event_handle = 0isize;
+                    let mut returned = 0u32;
+                    let succeeded = unsafe {
+                        windows_sys::Win32::System::EventLog::EvtNext(
+                            query_handle,
+                            1,
+                            &mut event_handle,
+                            EVENT_READ_TIMEOUT_MS,
+                            0,
+                            &mut returned,
+                        )
+                    };
+                    (succeeded, event_handle, returned)
+                });
+                if succeeded == 0 {
+                    let error = unsafe { windows_sys::Win32::Foundation::GetLastError() };
+                    match classify_evt_next_error(error) {
+                        EvtNextError::Timeout => continue,
+                        EvtNextError::Exhausted => {
+                            self.finished = true;
+                            return Ok(None);
+                        }
+                        EvtNextError::Other(error) => {
+                            return Err(PyRuntimeError::new_err(format!(
+                                "Windows Event Log query failed with error {error}"
+                            )));
+                        }
+                    }
+                }
+                if returned == 0 || event_handle == 0 {
                     self.finished = true;
                     return Ok(None);
                 }
-                return Err(PyRuntimeError::new_err(format!(
-                    "Windows Event Log query failed with error {error}"
-                )));
+                let event = EvtHandle(event_handle);
+                let xml = render_event_xml(event.0)?;
+                return formatted_record(py, xml, &self.format).map(Some);
             }
-            if returned == 0 || event_handle == 0 {
-                self.finished = true;
-                return Ok(None);
-            }
-            let event = EvtHandle(event_handle);
-            let xml = render_event_xml(event.0)?;
-            formatted_record(py, xml, &self.format).map(Some)
         }
         #[cfg(not(windows))]
         {
@@ -194,6 +199,24 @@ fn validate_query(channel: &str, query: &str) -> PyResult<()> {
 }
 
 #[cfg(windows)]
+enum EvtNextError {
+    Timeout,
+    Exhausted,
+    Other(u32),
+}
+
+#[cfg(windows)]
+fn classify_evt_next_error(error: u32) -> EvtNextError {
+    if error == windows_sys::Win32::Foundation::ERROR_TIMEOUT {
+        EvtNextError::Timeout
+    } else if error == windows_sys::Win32::Foundation::ERROR_NO_MORE_ITEMS {
+        EvtNextError::Exhausted
+    } else {
+        EvtNextError::Other(error)
+    }
+}
+
+#[cfg(windows)]
 struct EvtHandle(windows_sys::Win32::System::EventLog::EVT_HANDLE);
 
 #[cfg(windows)]
@@ -277,5 +300,21 @@ mod tests {
     fn rejects_empty_channel_and_query() {
         assert!(validate_query("", "*").is_err());
         assert!(validate_query("System", "").is_err());
+    }
+
+    #[cfg(windows)]
+    #[test]
+    fn evt_next_timeout_is_retryable_but_no_more_items_is_terminal() {
+        use super::{EvtNextError, classify_evt_next_error};
+        use windows_sys::Win32::Foundation::{ERROR_NO_MORE_ITEMS, ERROR_TIMEOUT};
+
+        assert!(matches!(
+            classify_evt_next_error(ERROR_TIMEOUT),
+            EvtNextError::Timeout
+        ));
+        assert!(matches!(
+            classify_evt_next_error(ERROR_NO_MORE_ITEMS),
+            EvtNextError::Exhausted
+        ));
     }
 }
