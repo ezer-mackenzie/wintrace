@@ -8,6 +8,7 @@ description = "Windows Event Log querying and EVTX parsing for Python, powered b
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
+dependencies = ["typing-extensions>=4.12"]
 keywords = ["windows", "event-log", "evtx", "forensics", "pyo3"]
 classifiers = [
     "Programming Language :: Rust",

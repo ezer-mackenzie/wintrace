@@ -3,6 +3,8 @@ from os import PathLike
 from types import TracebackType
 from typing import Any, Literal, overload
 
+from typing_extensions import Self
+
 __version__: str
 
 class EventRecord:
@@ -35,7 +37,7 @@ class EvtxFile:
     def iter(self, format: Literal["dict"]) -> Iterator[dict[str, Any]]: ...
     @overload
     def iter(self, format: Literal["xml", "json"]) -> Iterator[str]: ...
-    def __enter__(self) -> "EvtxFile": ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,
@@ -84,6 +86,7 @@ def iter_evtx(
     format: Literal["xml", "json"],
 ) -> Iterator[str]: ...
 
+@overload
 def iter_evtx(
     path: str | PathLike[str],
     format: str = ...,
@@ -137,6 +140,7 @@ def iter_events(
     format: Literal["xml", "json"],
 ) -> Iterator[str]: ...
 
+@overload
 def iter_events(
     channel: str = ...,
     query: str = ...,
