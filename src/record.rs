@@ -113,6 +113,13 @@ mod tests {
             Some(json!({"Empty": "", "@unnamed": ["raw"]}))
         );
     }
+
+    #[test]
+    fn preserves_repeated_named_event_data() {
+        let xml = r#"<Event><System/><EventData><Data Name="User">alice</Data><Data Name="User">bob</Data></EventData></Event>"#;
+        let record = EventRecord::from_xml(xml.to_owned()).expect("event XML should parse");
+        assert_eq!(record.event_data, Some(json!({"User": ["alice", "bob"]})));
+    }
 }
 
 fn value_as_u64(value: &Value) -> Option<u64> {
@@ -147,9 +154,7 @@ fn event_data_value(event_data: &Value) -> Option<Value> {
                 None => item.clone(),
             });
         match item.get("@Name").and_then(Value::as_str) {
-            Some(name) => {
-                named.insert(name.to_owned(), value);
-            }
+            Some(name) => insert_named_value(&mut named, name, value),
             None => unnamed.push(value),
         }
     }
@@ -162,6 +167,19 @@ fn event_data_value(event_data: &Value) -> Option<Value> {
         unnamed.pop()
     } else {
         Some(Value::Array(unnamed))
+    }
+}
+
+fn insert_named_value(object: &mut serde_json::Map<String, Value>, name: &str, value: Value) {
+    match object.get_mut(name) {
+        Some(Value::Array(values)) => values.push(value),
+        Some(previous) => {
+            let first = std::mem::replace(previous, Value::Null);
+            *previous = Value::Array(vec![first, value]);
+        }
+        None => {
+            object.insert(name.to_owned(), value);
+        }
     }
 }
 

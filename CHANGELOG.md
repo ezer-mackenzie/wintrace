@@ -8,6 +8,13 @@ Notable changes to `wintrace` are documented here.
 
 - Compatible fixes and maintenance updates.
 
+## [0.3.0]
+
+### Fixed
+
+- Preserve all values when an event contains repeated `EventData` names instead
+  of silently keeping only the last value.
+
 ## [0.2.0]
 
 ### Fixed

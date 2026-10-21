@@ -11,7 +11,7 @@ from .live import iter_events, query_events
 from .offline import iter_evtx, read_evtx
 from .utils import xml_to_dict, xml_to_json
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "EventRecord",

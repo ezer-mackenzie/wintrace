@@ -41,6 +41,11 @@ can be bounded with `limit`.
 `computer`, `system`, and `event_data`. It also provides `to_dict()`,
 `to_json()`, `get(key, default=None)`, and indexing by event section.
 
+For `event_data`, named `<Data>` elements are keyed by their `Name` attribute.
+When a name appears more than once, its value is a list preserving document
+order. Unnamed data elements are retained under the `@unnamed` key when named
+elements are also present.
+
 ## XML helpers
 
 - `xml_to_dict(xml)` parses Windows Event XML into nested Python dictionaries.

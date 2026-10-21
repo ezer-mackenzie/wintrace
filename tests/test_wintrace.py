@@ -77,7 +77,7 @@ class TestOfflineApi(unittest.TestCase):
 
 class TestPackageSurface(unittest.TestCase):
     def test_version_and_exports(self):
-        self.assertEqual(wintrace.__version__, "0.2.0")
+        self.assertEqual(wintrace.__version__, "0.3.0")
         for name in wintrace.__all__:
             self.assertTrue(hasattr(wintrace, name), name)
 
