@@ -7,10 +7,7 @@ from os import PathLike
 from typing import Any, Literal, overload
 
 from ._types import OutputFormat
-from ._wintrace import (
-    EventRecord,
-    EvtxRecordIterator as EvtxRecordIterator,
-)
+from ._wintrace import EventRecord
 from ._wintrace import (
     iter_evtx as _iter_evtx,
 )

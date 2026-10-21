@@ -3,6 +3,10 @@
 `wintrace` reads Windows Event Log channels and parses offline `.evtx` files
 through a Python API backed by Rust and PyO3.
 
+The `1.x` series provides a stable public API. Compatible additions and fixes
+remain within this series; breaking changes are reserved for a new major
+version. See [docs/api.md](docs/api.md) for the stability boundary.
+
 ## Installation
 
 Requires Python 3.10 or newer.

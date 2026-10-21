@@ -3,7 +3,7 @@
 ## Supported Versions
 
 Security fixes are considered for the latest released version. The current
-release line is `0.1.x`.
+release line is `1.0.x`.
 
 ## Reporting a Vulnerability
 

@@ -8,6 +8,14 @@ Notable changes to `wintrace` are documented here.
 
 - Compatible fixes and maintenance updates.
 
+## [1.0.0]
+
+### Stable
+
+- Declare the documented top-level Python API stable for the `1.x` series.
+- Preserve compatibility for additive changes and fixes; reserve breaking API
+  changes for a new major version.
+
 ## [0.9.0]
 
 ### Changed
