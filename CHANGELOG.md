@@ -8,6 +8,13 @@ Notable changes to `wintrace` are documented here.
 
 - Compatible fixes and maintenance updates.
 
+## [0.6.0]
+
+### Changed
+
+- Run the Windows API and Rust test suite on both the minimum supported Python
+  version (3.10) and the newest supported version (3.14).
+
 ## [0.5.0]
 
 ### Changed
