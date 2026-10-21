@@ -23,3 +23,14 @@ Live-query integration tests require Windows.
 - Update API documentation and `CHANGELOG.md` when user-visible behavior
   changes.
 - Do not commit generated binaries, private event logs, or credentials.
+
+## Release Tag
+
+- The local annotated `v0.1.0` tag should identify the final release commit.
+- Before publishing, compare it with `origin` using
+  `git show --no-patch --format="%H" v0.1.0` and
+  `git ls-remote --tags origin "refs/tags/v0.1.0*"`. Local and remote tags may
+  differ.
+- Updating the remote tag triggers the Publish workflow. Do not force-update or
+  push a release tag without explicit user approval; verify the PyPI version
+  state first.
