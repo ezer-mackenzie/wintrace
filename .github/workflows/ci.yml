@@ -199,6 +199,39 @@ jobs:
       - name: Run Rust unit tests
         run: cargo test --locked --no-default-features
 
+  distributions:
+    name: Build and test distributions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Set up virtual environment
+        run: |
+          python -m venv .venv
+          echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
+          echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/.venv" >> "$GITHUB_ENV"
+      - name: Install build and distribution tools
+        run: python -m pip install "maturin>=1.15,<2.0" "twine>=6.1,<7.0"
+      - name: Build wheel and source distribution
+        run: |
+          maturin build --release --locked --out dist --interpreter python
+          maturin sdist --out dist
+      - name: Check distribution metadata
+        run: python -m twine check --strict dist/*
+      - name: Install and test built wheel
+        run: |
+          python -m pip install --force-reinstall --no-deps --no-index --find-links dist wintrace
+          python -m unittest discover -s tests -v
+      - name: Rebuild and test source distribution
+        run: |
+          mkdir rebuilt
+          python -m pip wheel --no-deps --no-build-isolation --wheel-dir rebuilt dist/*.tar.gz
+          python -m pip install --force-reinstall --no-deps --no-index --find-links rebuilt wintrace
+          python -m unittest discover -s tests -v
+
   docs:
     runs-on: ubuntu-latest
     steps:

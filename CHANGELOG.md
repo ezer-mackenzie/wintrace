@@ -8,6 +8,13 @@ Notable changes to `wintrace` are documented here.
 
 - Compatible fixes and maintenance updates.
 
+## [0.8.0]
+
+### Changed
+
+- Build the wheel and source distribution in CI, validate metadata with Twine,
+  and install/test both artifacts before release.
+
 ## [0.7.0]
 
 ### Changed
