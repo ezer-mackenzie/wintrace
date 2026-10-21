@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from typing import Any, Literal, overload
 
 from ._types import OutputFormat
@@ -83,12 +84,59 @@ def query_events(
     )
 
 
+@overload
+def iter_events(
+    channel: str = "System",
+    query: str = "*",
+    reverse: bool = True,
+    format: Literal["record"] = "record",
+) -> Iterator[EventRecord]: ...
+
+
+@overload
+def iter_events(
+    channel: str,
+    query: str,
+    reverse: bool,
+    format: Literal["dict"],
+) -> Iterator[dict[str, Any]]: ...
+
+
+@overload
+def iter_events(
+    channel: str = "System",
+    query: str = "*",
+    reverse: bool = True,
+    *,
+    format: Literal["dict"],
+) -> Iterator[dict[str, Any]]: ...
+
+
+@overload
+def iter_events(
+    channel: str,
+    query: str,
+    reverse: bool,
+    format: Literal["xml", "json"],
+) -> Iterator[str]: ...
+
+
+@overload
+def iter_events(
+    channel: str = "System",
+    query: str = "*",
+    reverse: bool = True,
+    *,
+    format: Literal["xml", "json"],
+) -> Iterator[str]: ...
+
+
 def iter_events(
     channel: str = "System",
     query: str = "*",
     reverse: bool = True,
     format: OutputFormat = "record",
-) -> LiveEventIterator:
+) -> Iterator[Any]:
     """Return an iterator over events matching a Windows XPath query."""
     return _iter_events(
         channel=channel,

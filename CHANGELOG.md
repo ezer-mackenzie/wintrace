@@ -8,6 +8,13 @@ Notable changes to `wintrace` are documented here.
 
 - Compatible fixes and maintenance updates.
 
+## [0.5.0]
+
+### Changed
+
+- Type iterator results according to the selected output format across the
+  module-level API and native file/log objects.
+
 ## [0.4.0]
 
 ### Changed

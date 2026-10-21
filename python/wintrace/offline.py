@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from os import PathLike
 from typing import Any, Literal, overload
 
 from ._types import OutputFormat
 from ._wintrace import (
     EventRecord,
-    EvtxRecordIterator,
+    EvtxRecordIterator as EvtxRecordIterator,
 )
 from ._wintrace import (
     iter_evtx as _iter_evtx,
@@ -69,9 +70,30 @@ def read_evtx(
     return _read_evtx(path, limit=limit, format=format)
 
 
+@overload
+def iter_evtx(
+    path: str | PathLike[str],
+    format: Literal["record"] = "record",
+) -> Iterator[EventRecord]: ...
+
+
+@overload
+def iter_evtx(
+    path: str | PathLike[str],
+    format: Literal["dict"],
+) -> Iterator[dict[str, Any]]: ...
+
+
+@overload
+def iter_evtx(
+    path: str | PathLike[str],
+    format: Literal["xml", "json"],
+) -> Iterator[str]: ...
+
+
 def iter_evtx(
     path: str | PathLike[str],
     format: OutputFormat = "record",
-) -> EvtxRecordIterator:
+) -> Iterator[Any]:
     """Iterate through an EVTX file without returning a list of all its records."""
     return _iter_evtx(path, format=format)

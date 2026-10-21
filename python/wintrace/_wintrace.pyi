@@ -1,7 +1,7 @@
 from collections.abc import Iterator
 from os import PathLike
 from types import TracebackType
-from typing import Any
+from typing import Any, Literal, overload
 
 __version__: str
 
@@ -29,7 +29,12 @@ class EvtxRecordIterator(Iterator[Any]):
 class EvtxFile:
     def __init__(self, path: str | PathLike[str]) -> None: ...
     def read(self, limit: None | int = ..., format: str = ...) -> list[Any]: ...
-    def iter(self, format: str = ...) -> EvtxRecordIterator: ...
+    @overload
+    def iter(self, format: Literal["record"] = ...) -> Iterator[EventRecord]: ...
+    @overload
+    def iter(self, format: Literal["dict"]) -> Iterator[dict[str, Any]]: ...
+    @overload
+    def iter(self, format: Literal["xml", "json"]) -> Iterator[str]: ...
     def __enter__(self) -> "EvtxFile": ...
     def __exit__(
         self,
@@ -49,17 +54,40 @@ class LiveEventLog:
         reverse: bool = ...,
     ) -> None: ...
     def read(self, limit: None | int = ..., format: str = ...) -> list[Any]: ...
-    def iter(self, format: str = ...) -> LiveEventIterator: ...
+    @overload
+    def iter(self, format: Literal["record"] = ...) -> Iterator[EventRecord]: ...
+    @overload
+    def iter(self, format: Literal["dict"]) -> Iterator[dict[str, Any]]: ...
+    @overload
+    def iter(self, format: Literal["xml", "json"]) -> Iterator[str]: ...
 
 def read_evtx(
     path: str | PathLike[str],
     limit: None | int = ...,
     format: str = ...,
 ) -> list[Any]: ...
+@overload
+def iter_evtx(
+    path: str | PathLike[str],
+    format: Literal["record"] = ...,
+) -> Iterator[EventRecord]: ...
+
+@overload
+def iter_evtx(
+    path: str | PathLike[str],
+    format: Literal["dict"],
+) -> Iterator[dict[str, Any]]: ...
+
+@overload
+def iter_evtx(
+    path: str | PathLike[str],
+    format: Literal["xml", "json"],
+) -> Iterator[str]: ...
+
 def iter_evtx(
     path: str | PathLike[str],
     format: str = ...,
-) -> EvtxRecordIterator: ...
+) -> Iterator[Any]: ...
 def query_events(
     channel: str = ...,
     query: str = ...,
@@ -67,11 +95,53 @@ def query_events(
     reverse: bool = ...,
     format: str = ...,
 ) -> list[Any]: ...
+@overload
+def iter_events(
+    channel: str = ...,
+    query: str = ...,
+    reverse: bool = ...,
+    format: Literal["record"] = ...,
+) -> Iterator[EventRecord]: ...
+
+@overload
+def iter_events(
+    channel: str,
+    query: str,
+    reverse: bool,
+    format: Literal["dict"],
+) -> Iterator[dict[str, Any]]: ...
+
+@overload
+def iter_events(
+    channel: str,
+    query: str,
+    reverse: bool,
+    format: Literal["xml", "json"],
+) -> Iterator[str]: ...
+
+@overload
+def iter_events(
+    channel: str = ...,
+    query: str = ...,
+    reverse: bool = ...,
+    *,
+    format: Literal["dict"],
+) -> Iterator[dict[str, Any]]: ...
+
+@overload
+def iter_events(
+    channel: str = ...,
+    query: str = ...,
+    reverse: bool = ...,
+    *,
+    format: Literal["xml", "json"],
+) -> Iterator[str]: ...
+
 def iter_events(
     channel: str = ...,
     query: str = ...,
     reverse: bool = ...,
     format: str = ...,
-) -> LiveEventIterator: ...
+) -> Iterator[Any]: ...
 def xml_to_dict(xml: str) -> dict[str, Any]: ...
 def xml_to_json(xml: str) -> str: ...

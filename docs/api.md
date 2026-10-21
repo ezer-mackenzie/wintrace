@@ -40,6 +40,8 @@ can be bounded with `limit`.
 `event_id`, `record_id`, `channel`, `provider`, `level`, `time_created`,
 `computer`, `system`, and `event_data`. It also provides `to_dict()`,
 `to_json()`, `get(key, default=None)`, and indexing by event section.
+Iterator return types reflect the format: `EventRecord` for `"record"`,
+`dict[str, Any]` for `"dict"`, and `str` for `"xml"` or `"json"`.
 
 For `event_data`, named `<Data>` elements are keyed by their `Name` attribute.
 When a name appears more than once, its value is a list preserving document
