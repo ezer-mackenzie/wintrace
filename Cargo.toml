@@ -1,6 +1,6 @@
 [package]
 name = "wintrace"
-version = "0.6.0"
+version = "0.7.0"
 edition = "2024"
 rust-version = "1.88"
 description = "Windows Event Log querying and EVTX parsing for Python, powered by Rust and PyO3"

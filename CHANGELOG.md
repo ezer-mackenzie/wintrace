@@ -8,6 +8,13 @@ Notable changes to `wintrace` are documented here.
 
 - Compatible fixes and maintenance updates.
 
+## [0.7.0]
+
+### Changed
+
+- Run the API and Rust test suites on Linux to continuously validate portable
+  EVTX/XML behavior and non-Windows platform gating.
+
 ## [0.6.0]
 
 ### Changed
